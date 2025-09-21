@@ -1,4 +1,8 @@
-package com.parking;
+package com.parking.src.com.ui;
+
+import com.parking.src.com.core.Parking;
+import com.parking.src.com.pricing.LenientPricingCalculator;
+import com.parking.src.com.core.ParkingImpl;
 
 public class ParkingDemo {
     public static void main(String[] args) throws InterruptedException {

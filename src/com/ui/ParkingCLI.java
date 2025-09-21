@@ -1,4 +1,8 @@
-package com.parking;
+package com.parking.src.com.ui;
+
+import com.parking.src.com.core.Parking;
+import com.parking.src.com.core.ParkingImpl;
+import com.parking.src.com.pricing.SimplePricingCalculator;
 
 import java.io.IOException;
 import java.math.BigDecimal;

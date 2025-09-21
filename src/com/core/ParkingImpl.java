@@ -1,4 +1,7 @@
-package com.parking;
+package com.parking.src.com.core;
+
+import com.parking.src.com.model.ParkingRecord;
+import com.parking.src.com.pricing.PricingCalculator;
 
 import java.io.*;
 import java.math.BigDecimal;

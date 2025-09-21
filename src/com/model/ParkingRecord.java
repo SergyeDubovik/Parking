@@ -1,4 +1,4 @@
-package com.parking;
+package com.parking.src.com.model;
 
 import java.time.LocalDateTime;
 

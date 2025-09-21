@@ -1,9 +1,9 @@
-package com.parking;
+package com.parking.src.com.pricing;
 
 import java.math.BigDecimal;
 import java.time.Duration;
 
-public class LenientPricingCalculator implements PricingCalculator {
+public class SimplePricingCalculator implements PricingCalculator {
     @Override
     public BigDecimal calculate(Duration duration) {
         BigDecimal lessThanHour = BigDecimal.ZERO;
@@ -13,16 +13,20 @@ public class LenientPricingCalculator implements PricingCalculator {
             return lessThanHour;
         } else if (duration.compareTo(Duration.ofDays(1)) < 0) {
             long hours = duration.toHours();
+            long extraMinutes = duration.toMinutes() % 60;
+            if (extraMinutes > 0) {
+                hours += 1;
+            }
             BigDecimal convertedHours = BigDecimal.valueOf(hours);
             return perHour.multiply(convertedHours);
         } else {
             long days = duration.toDays();
             long extraHours = duration.toHours() % 24;
-            if (extraHours > 4) {
-                days += 1;
+            if (extraHours > 0) {
+                days++;
             }
             BigDecimal convertToDays = BigDecimal.valueOf(days);
-            return convertToDays.multiply(perDay);
+            return perDay.multiply(convertToDays);
         }
     }
 }

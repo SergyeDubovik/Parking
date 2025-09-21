@@ -1,4 +1,4 @@
-package com.parking;
+package com.parking.src.com.core;
 
 import java.io.IOException;
 import java.math.BigDecimal;

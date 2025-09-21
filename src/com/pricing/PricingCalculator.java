@@ -1,4 +1,4 @@
-package com.parking;
+package com.parking.src.com.pricing;
 
 import java.math.BigDecimal;
 import java.time.Duration;
