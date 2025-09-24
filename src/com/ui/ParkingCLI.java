@@ -28,6 +28,10 @@ public class ParkingCLI {
                 case "2":
                     exitCar(parking, sc);
                     break;
+                case "3":
+                    boolean[] status = parking.getStatus();
+                    showParkingStatus(status);
+                    break;
                 case "0":
                     saveToFile(parking);
                     System.out.println("Bye");
@@ -63,6 +67,18 @@ public class ParkingCLI {
         }
     }
 
+    private static void showParkingStatus(boolean[] status) {
+        int taken = 0;
+        int totalParkingSlots = status.length;
+        for (boolean slot : status) {
+            if (!slot) {
+                taken++;
+            }
+        }
+        System.out.println("Slots taken: " + taken + " of " + totalParkingSlots);
+        System.out.println();
+    }
+
     private static void saveToFile(Parking parking) {
         try {
             parking.saveData();
@@ -77,6 +93,7 @@ public class ParkingCLI {
         System.out.println("Welcome to car parking");
         System.out.println("1 - Car Enter");
         System.out.println("2 - Car Exit");
+        System.out.println("3 - Show Parking Status");
         System.out.println("0 - Close app");
     }
 }

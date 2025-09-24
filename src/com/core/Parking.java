@@ -8,4 +8,5 @@ public interface Parking {
     BigDecimal exit(String carNumber);
     void saveData() throws IOException;
     void loadData() throws IOException;
+    boolean[] getStatus();
 }

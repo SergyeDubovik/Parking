@@ -108,6 +108,11 @@ public class ParkingImpl implements Parking {
         }
     }
 
+    @Override
+    public boolean[] getStatus() {
+        return isFree.clone();
+    }
+
     private static Integer tryParseSlot(String[] partsOfData) {
         int slot;
         try {
