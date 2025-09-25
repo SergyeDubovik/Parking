@@ -9,4 +9,5 @@ public interface Parking {
     void saveData() throws IOException;
     void loadData() throws IOException;
     boolean[] getStatus();
+    int takenSlots();
 }
