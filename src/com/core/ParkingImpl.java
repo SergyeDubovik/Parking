@@ -108,6 +108,17 @@ public class ParkingImpl implements Parking {
         }
     }
 
+    @Override
+    public boolean[] getStatus() {
+        return isFree;
+    }
+
+    @Override
+    public int takenSlots() {
+        return visitors.size();
+    }
+
+
     private static Integer tryParseSlot(String[] partsOfData) {
         int slot;
         try {
