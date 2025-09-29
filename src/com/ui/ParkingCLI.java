@@ -10,7 +10,13 @@ import java.util.Scanner;
 
 public class ParkingCLI {
     public static void main(String[] args) throws IOException {
-        Parking someParking = new ParkingImpl(10, new SimplePricingCalculator());
+        String fileName;
+        if (args.length > 0) {
+            fileName = args[0];
+        } else {
+            fileName = "parking.csv";
+        }
+        Parking someParking = new ParkingImpl(10, new SimplePricingCalculator(), fileName);
         someParking.loadData();
         Scanner scanner = new Scanner(System.in);
 
