@@ -18,14 +18,19 @@ public class ParkingImpl implements Parking {
     private final boolean[] isFree;
     private final PricingCalculator calculator;
     private final Map<String, ParkingRecord> visitors = new HashMap<>();
-    private final String fileName = "parking.csv";
+    private final String fileName;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-    public ParkingImpl(int size, PricingCalculator calculator) {
+    public ParkingImpl(int size, PricingCalculator calculator, String fileName) {
         this.size = size;
         isFree = new boolean[size];
         Arrays.fill(isFree, true);
         this.calculator = calculator;
+        this.fileName = fileName;
+    }
+
+    public ParkingImpl(int size, PricingCalculator calculator) {
+        this(size,calculator, "parking.csv");
     }
 
     @Override
