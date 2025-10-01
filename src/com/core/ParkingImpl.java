@@ -55,7 +55,7 @@ public class ParkingImpl implements Parking {
     @Override
     public BigDecimal exit(String carNumber) {
         if (!visitors.containsKey(carNumber)) {
-            throw new RuntimeException("Car not found. Please verify data and try again.");
+            throw new CarNotFoundException("Car not found. Please verify data and try again.");
         }
         LocalDateTime now = LocalDateTime.now();
         ParkingRecord record = visitors.get(carNumber);

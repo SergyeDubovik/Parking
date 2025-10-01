@@ -1,5 +1,6 @@
 package com.parking.src.com.ui;
 
+import com.parking.src.com.core.CarNotFoundException;
 import com.parking.src.com.core.Parking;
 import com.parking.src.com.core.ParkingImpl;
 import com.parking.src.com.pricing.SimplePricingCalculator;
@@ -67,7 +68,7 @@ public class ParkingCLI {
         try {
             BigDecimal pay = parking.exit(carNumberOnExit);
             System.out.println("Car " + carNumberOnExit + "has exited. Amount due: $" + pay);
-        } catch (RuntimeException e) {
+        } catch (CarNotFoundException e) {
             System.out.println("Error: " + e.getMessage());
         }
     }
