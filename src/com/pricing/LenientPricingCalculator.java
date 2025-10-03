@@ -6,9 +6,9 @@ import java.time.Duration;
 public class LenientPricingCalculator implements PricingCalculator {
     @Override
     public BigDecimal calculate(Duration duration) {
-        BigDecimal lessThanHour = BigDecimal.ZERO;
-        BigDecimal perHour = new BigDecimal(20);
-        BigDecimal perDay = new BigDecimal(300);
+        BigDecimal lessThanHour = ParkingPrice.LESS_THAN_HOUR.getValue();
+        BigDecimal perHour = ParkingPrice.PER_HOUR.getValue();
+        BigDecimal perDay = ParkingPrice.PER_DAY.getValue();
         if (duration.compareTo(Duration.ofHours(1)) < 0) {
             return lessThanHour;
         } else if (duration.compareTo(Duration.ofDays(1)) < 0) {
