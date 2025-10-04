@@ -76,6 +76,13 @@ public class ParkingCLI {
     private static void showParkingStatus(Parking parking) {
         boolean[] status = parking.getStatus();
         System.out.println("Slots taken: " + parking.takenSlots() + " of " + status.length);
+        for (int i = 0; i < status.length; i++) {
+            if (status[i]) {
+                System.out.println("[" + (i + 1) + "] - free");
+            } else {
+                System.out.println("[" + (i + 1) + "] - taken");
+            }
+        }
         System.out.println();
     }
 
