@@ -4,6 +4,7 @@ import com.parking.src.com.core.CarNotFoundException;
 import com.parking.src.com.core.Parking;
 import com.parking.src.com.core.ParkingImpl;
 import com.parking.src.com.pricing.SimplePricingCalculator;
+import com.parking.src.com.pricing.WeekendFreeCalculator;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -17,7 +18,7 @@ public class ParkingCLI {
         } else {
             fileName = "parking.csv";
         }
-        Parking someParking = new ParkingImpl(10, new SimplePricingCalculator(), fileName);
+        Parking someParking = new ParkingImpl(10, new WeekendFreeCalculator(), fileName);
         someParking.loadData();
         Scanner scanner = new Scanner(System.in);
 
