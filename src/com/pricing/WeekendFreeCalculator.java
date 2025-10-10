@@ -7,16 +7,24 @@ import java.time.LocalDateTime;
 
 public class WeekendFreeCalculator implements PricingCalculator {
     PricingCalculator usualCalculator = new SimplePricingCalculator();
+
     @Override
     public BigDecimal calculate(Duration duration) {
         LocalDateTime enter = LocalDateTime.now();
         LocalDateTime exit = enter.plus(duration);
-        DayOfWeek entDay = enter.getDayOfWeek();
-        DayOfWeek exDay = exit.getDayOfWeek();
-        if ((entDay == DayOfWeek.SATURDAY || entDay == DayOfWeek.SUNDAY) &&
-                (exDay == DayOfWeek.SATURDAY || exDay == DayOfWeek.SUNDAY)) {
-            return BigDecimal.ZERO;
+        return calculateForTest(enter, exit);
+    }
+
+    public BigDecimal calculateForTest(LocalDateTime enter, LocalDateTime exit) {
+        BigDecimal totalPrice = BigDecimal.ZERO;
+        LocalDateTime currentDateTime = enter;
+        while (currentDateTime.isBefore(exit)) {
+            DayOfWeek day = currentDateTime.getDayOfWeek();
+            if (day != DayOfWeek.SATURDAY && day != DayOfWeek.SUNDAY) {
+                totalPrice = totalPrice.add(ParkingPrice.PER_DAY.getValue());
+            }
+            currentDateTime = currentDateTime.plusDays(1);
         }
-        return usualCalculator.calculate(duration);
+        return totalPrice;
     }
 }
