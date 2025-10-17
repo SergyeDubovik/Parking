@@ -12,6 +12,7 @@ import java.time.format.DateTimeParseException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class ParkingImpl implements Parking {
     private final int size;
@@ -111,6 +112,14 @@ public class ParkingImpl implements Parking {
                 isFree[slot] = false;
             }
         }
+    }
+
+    public Optional<Integer> findCar(String carNumber) {
+        ParkingRecord record = visitors.get(carNumber);
+        if (record != null) {
+            return Optional.of(record.getSlot() + 1);
+        }
+        return Optional.empty();
     }
 
     @Override
