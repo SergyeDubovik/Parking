@@ -8,6 +8,7 @@ import com.parking.src.com.pricing.WeekendFreeCalculator;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.Optional;
 import java.util.Scanner;
 
 public class ParkingCLI {
@@ -38,6 +39,9 @@ public class ParkingCLI {
                     break;
                 case "3":
                     showParkingStatus(parking);
+                    break;
+                case "4":
+                    findSpecifiedCar(parking, sc);
                     break;
                 case "0":
                     saveToFile(parking);
@@ -87,6 +91,17 @@ public class ParkingCLI {
         System.out.println();
     }
 
+    private static void findSpecifiedCar(Parking parking, Scanner scanner) {
+        System.out.println("Enter the car number: ");
+        String carNumber = scanner.nextLine();
+        Optional<Integer> slotByNumber = parking.findCar(carNumber);
+        if (slotByNumber.isPresent()) {
+            System.out.println("Car " + carNumber + " is parked in slot " + slotByNumber.get());
+        } else {
+            System.out.println("Car " + carNumber + " is not found on the parking");
+        }
+    }
+
     private static void saveToFile(Parking parking) {
         try {
             parking.saveData();
@@ -102,6 +117,7 @@ public class ParkingCLI {
         System.out.println("1 - Car Enter");
         System.out.println("2 - Car Exit");
         System.out.println("3 - Show Parking Status");
+        System.out.println("4 - Find specified car");
         System.out.println("0 - Close app");
     }
 }
