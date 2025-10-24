@@ -60,9 +60,9 @@ public class ParkingImpl implements Parking {
         }
         LocalDateTime now = LocalDateTime.now();
         ParkingRecord record = visitors.get(carNumber);
-        LocalDateTime enterTime = record.getEnterTime();
+        LocalDateTime enterTime = record.enterTime();
         Duration duration = Duration.between(enterTime, now);
-        isFree[record.getSlot()] = true;
+        isFree[record.slot()] = true;
         visitors.remove(carNumber);
         return calculator.calculate(duration);
     }
@@ -77,8 +77,8 @@ public class ParkingImpl implements Parking {
                 new FileWriter(fileName))) {
             for (Map.Entry<String, ParkingRecord> entry : visitors.entrySet()) {
                 ParkingRecord pr = entry.getValue();
-                String formattedDate = pr.getEnterTime().format(formatter);
-                String line = entry.getKey() + "," + formattedDate + "," + pr.getSlot() + "\n";
+                String formattedDate = pr.enterTime().format(formatter);
+                String line = entry.getKey() + "," + formattedDate + "," + pr.slot() + "\n";
                 bufferedWriter.write(line);
             }
         }
@@ -117,7 +117,7 @@ public class ParkingImpl implements Parking {
     public Optional<Integer> findCar(String carNumber) {
         ParkingRecord record = visitors.get(carNumber);
         if (record != null) {
-            return Optional.of(record.getSlot() + 1);
+            return Optional.of(record.slot() + 1);
         }
         return Optional.empty();
     }

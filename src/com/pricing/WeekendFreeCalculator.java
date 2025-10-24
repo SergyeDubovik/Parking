@@ -6,7 +6,6 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 
 public class WeekendFreeCalculator implements PricingCalculator {
-    PricingCalculator usualCalculator = new SimplePricingCalculator();
 
     @Override
     public BigDecimal calculate(Duration duration) {
