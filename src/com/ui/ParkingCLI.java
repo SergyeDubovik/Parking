@@ -26,6 +26,7 @@ public class ParkingCLI {
         runMenu(someParking, scanner);
 
     }
+
     private static void runMenu(Parking parking, Scanner sc) {
         while (true) {
             displayMenu();
@@ -68,7 +69,7 @@ public class ParkingCLI {
     }
 
     private static void exitCar(Parking parking, Scanner scanner) {
-        System.out.println("Please enter the car number to exit...");
+        System.out.println("Enter the car number to exit the parking:");
         String carNumberOnExit = scanner.nextLine();
         try {
             BigDecimal pay = parking.exit(carNumberOnExit);
@@ -113,11 +114,11 @@ public class ParkingCLI {
 
     private static void displayMenu() {
         System.out.println();
-        System.out.println("Welcome to car parking");
+        System.out.println("Welcome to car parking! Choose an option from the menu below:");
         System.out.println("1 - Car Enter");
         System.out.println("2 - Car Exit");
         System.out.println("3 - Show Parking Status");
-        System.out.println("4 - Find specified car");
+        System.out.println("4 - Find Car By Number");
         System.out.println("0 - Close app");
     }
 }
