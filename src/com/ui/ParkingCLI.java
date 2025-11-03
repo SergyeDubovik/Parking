@@ -19,7 +19,7 @@ public class ParkingCLI {
         } else {
             fileName = "parking.csv";
         }
-        Parking someParking = new ParkingImpl(10, new WeekendFreeCalculator(), fileName);
+        ParkingImpl someParking = new ParkingImpl(10, new WeekendFreeCalculator(), fileName);
         someParking.loadData();
         Scanner scanner = new Scanner(System.in);
 
@@ -27,7 +27,7 @@ public class ParkingCLI {
 
     }
 
-    private static void runMenu(Parking parking, Scanner sc) {
+    private static void runMenu(ParkingImpl parking, Scanner sc) {
         while (true) {
             displayMenu();
             String choice = sc.nextLine();
@@ -103,7 +103,7 @@ public class ParkingCLI {
         }
     }
 
-    private static void saveToFile(Parking parking) {
+    private static void saveToFile(ParkingImpl parking) {
         try {
             parking.saveData();
             System.out.println("Saving data completed successfully!");
