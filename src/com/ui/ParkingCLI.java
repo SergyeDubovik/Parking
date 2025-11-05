@@ -3,6 +3,7 @@ package com.parking.src.com.ui;
 import com.parking.src.com.core.CarNotFoundException;
 import com.parking.src.com.core.Parking;
 import com.parking.src.com.core.ParkingImpl;
+import com.parking.src.com.core.PersistableParking;
 import com.parking.src.com.pricing.SimplePricingCalculator;
 import com.parking.src.com.pricing.WeekendFreeCalculator;
 
@@ -19,7 +20,7 @@ public class ParkingCLI {
         } else {
             fileName = "parking.csv";
         }
-        Parking someParking = new ParkingImpl(10, new WeekendFreeCalculator(), fileName);
+        PersistableParking someParking = new ParkingImpl(10, new WeekendFreeCalculator(), fileName);
         someParking.loadData();
         Scanner scanner = new Scanner(System.in);
 
@@ -27,7 +28,7 @@ public class ParkingCLI {
 
     }
 
-    private static void runMenu(Parking parking, Scanner sc) {
+    private static void runMenu(PersistableParking parking, Scanner sc) {
         while (true) {
             displayMenu();
             String choice = sc.nextLine();
@@ -103,7 +104,7 @@ public class ParkingCLI {
         }
     }
 
-    private static void saveToFile(Parking parking) {
+    private static void saveToFile(PersistableParking parking) {
         try {
             parking.saveData();
             System.out.println("Saving data completed successfully!");

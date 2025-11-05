@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public class ParkingImpl implements Parking {
+public class ParkingImpl implements PersistableParking {
     private final int size;
     private final boolean[] isFree;
     private final PricingCalculator calculator;
