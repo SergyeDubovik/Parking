@@ -74,7 +74,7 @@ public class ParkingCLI {
         String carNumberOnExit = scanner.nextLine();
         try {
             BigDecimal pay = parking.exit(carNumberOnExit);
-            System.out.println("Car " + carNumberOnExit + "has exited. Amount due: $" + pay);
+            System.out.println("Car " + carNumberOnExit + " has exited. Amount due: $" + pay);
         } catch (CarNotFoundException e) {
             System.out.println("Error: " + e.getMessage());
         }

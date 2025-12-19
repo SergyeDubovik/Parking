@@ -104,7 +104,7 @@ public class ParkingImpl implements PersistableParking {
                     continue;
                 }
                 Integer slot = tryParseSlot(partsOfData);
-                if (slot == null) {
+                if (slot == null || slot >= size) {
                     continue;
                 }
                 ParkingRecord value = new ParkingRecord(slot, localDateTime);
