@@ -1,10 +1,15 @@
 package com.parking.src.com.core;
 
+import com.parking.src.com.dataBase.DataBaseConnection;
 import com.parking.src.com.model.ParkingRecord;
 import com.parking.src.com.pricing.PricingCalculator;
 
 import java.io.*;
 import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -31,7 +36,7 @@ public class ParkingImpl implements PersistableParking {
     }
 
     public ParkingImpl(int size, PricingCalculator calculator) {
-        this(size,calculator, "parking.csv");
+        this(size, calculator, "parking.csv");
     }
 
     @Override
@@ -68,21 +73,50 @@ public class ParkingImpl implements PersistableParking {
     }
 
     @Override
-    public void saveData() throws IOException {
+    public void saveData() throws SQLException {
         if (visitors.isEmpty()) {
-            System.out.println("The parking is empty. No data to save.");
+            System.out.println("The parking is empty, no data to save");
             return;
         }
-        try (BufferedWriter bufferedWriter = new BufferedWriter(
-                new FileWriter(fileName))) {
+        String sql = """
+                INSERT INTO parking (car_number, enter_time, slot)
+                VALUES (?, ?, ?)
+                ON CONFLICT (car_number)
+                DO UPDATE SET
+                    enter_time = EXCLUDED.enter_time,
+                    slot = EXCLUDED.slot
+                """;
+        try (Connection connection = DataBaseConnection.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+
             for (Map.Entry<String, ParkingRecord> entry : visitors.entrySet()) {
-                ParkingRecord pr = entry.getValue();
-                String formattedDate = pr.enterTime().format(formatter);
-                String line = entry.getKey() + "," + formattedDate + "," + pr.slot() + "\n";
-                bufferedWriter.write(line);
+                ps.setString(1, entry.getKey());
+                ps.setTimestamp(2, Timestamp.valueOf(entry.getValue().enterTime()));
+                ps.setInt(3, entry.getValue().slot());
+                ps.executeUpdate();
             }
+            System.out.println("data saved to db");
+        } catch (SQLException exception) {
+            throw new SQLException("Error saving data to db", exception);
         }
     }
+
+//    @Override
+//    public void saveData() throws IOException {
+//        if (visitors.isEmpty()) {
+//            System.out.println("The parking is empty. No data to save.");
+//            return;
+//        }
+//        try (BufferedWriter bufferedWriter = new BufferedWriter(
+//                new FileWriter(fileName))) {
+//            for (Map.Entry<String, ParkingRecord> entry : visitors.entrySet()) {
+//                ParkingRecord pr = entry.getValue();
+//                String formattedDate = pr.enterTime().format(formatter);
+//                String line = entry.getKey() + "," + formattedDate + "," + pr.slot() + "\n";
+//                bufferedWriter.write(line);
+//            }
+//        }
+//    }
 
     @Override
     public void loadData() throws IOException {
