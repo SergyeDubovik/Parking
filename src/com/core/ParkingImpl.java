@@ -81,13 +81,13 @@ public class ParkingImpl implements PersistableParking {
         String sql = """
                 INSERT INTO parking (car_number, enter_time, slot)
                 VALUES (?, ?, ?)
-                ON CONFLICT (car_number)
-                DO UPDATE SET
-                    enter_time = EXCLUDED.enter_time,
-                    slot = EXCLUDED.slot
                 """;
         try (Connection connection = DataBaseConnection.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            String clearTable = "TRUNCATE TABLE parking";
+            PreparedStatement statement = connection.prepareStatement(clearTable);
+            statement.execute();
 
             for (Map.Entry<String, ParkingRecord> entry : visitors.entrySet()) {
                 ps.setString(1, entry.getKey());
@@ -97,6 +97,7 @@ public class ParkingImpl implements PersistableParking {
             }
             System.out.println("data saved to db");
         } catch (SQLException exception) {
+            exception.printStackTrace();
             throw new SQLException("Error saving data to db", exception);
         }
     }
