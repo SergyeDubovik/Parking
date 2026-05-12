@@ -14,6 +14,11 @@ public class WeekendFreeCalculator implements PricingCalculator {
         return calculateForTest(enter, exit);
     }
 
+    /**
+     * @param enter
+     * @param exit
+     * @return
+     */
     public BigDecimal calculateForTest(LocalDateTime enter, LocalDateTime exit) {
         BigDecimal totalPrice = BigDecimal.ZERO;
         LocalDateTime currentDateTime = enter;

@@ -9,6 +9,7 @@ import com.parking.src.com.pricing.WeekendFreeCalculator;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.util.Optional;
 import java.util.Scanner;
 
@@ -108,7 +109,7 @@ public class ParkingCLI {
         try {
             parking.saveData();
             System.out.println("Saving data completed successfully!");
-        } catch (IOException e) {
+        } catch (IOException | SQLException e) {
             System.out.println("Failed to save parking data " + e.getMessage());
         }
     }
