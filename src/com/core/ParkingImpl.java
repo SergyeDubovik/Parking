@@ -95,28 +95,11 @@ public class ParkingImpl implements PersistableParking {
                 ps.setInt(3, entry.getValue().slot());
                 ps.executeUpdate();
             }
-            System.out.println("data saved to db");
+            System.out.println("data saved to database");
         } catch (SQLException exception) {
-            throw new SQLException("Error saving data to db", exception);
+            throw new SQLException("Error saving data to database", exception);
         }
     }
-
-//    @Override
-//    public void saveData() throws IOException {
-//        if (visitors.isEmpty()) {
-//            System.out.println("The parking is empty. No data to save.");
-//            return;
-//        }
-//        try (BufferedWriter bufferedWriter = new BufferedWriter(
-//                new FileWriter(fileName))) {
-//            for (Map.Entry<String, ParkingRecord> entry : visitors.entrySet()) {
-//                ParkingRecord pr = entry.getValue();
-//                String formattedDate = pr.enterTime().format(formatter);
-//                String line = entry.getKey() + "," + formattedDate + "," + pr.slot() + "\n";
-//                bufferedWriter.write(line);
-//            }
-//        }
-//    }
 
     @Override
     public void loadData() throws IOException {
