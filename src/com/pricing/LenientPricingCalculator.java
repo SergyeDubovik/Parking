@@ -2,13 +2,17 @@ package com.parking.src.com.pricing;
 
 import java.math.BigDecimal;
 import java.time.Duration;
+import java.time.LocalDateTime;
 
 public class LenientPricingCalculator implements PricingCalculator {
     @Override
-    public BigDecimal calculate(Duration duration) {
+    public BigDecimal calculate(LocalDateTime enter, LocalDateTime exit) {
+        Duration duration = Duration.between(enter, exit);
+
         BigDecimal lessThanHour = ParkingPrice.LESS_THAN_HOUR.getValue();
         BigDecimal perHour = ParkingPrice.PER_HOUR.getValue();
         BigDecimal perDay = ParkingPrice.PER_DAY.getValue();
+
         if (duration.compareTo(Duration.ofHours(1)) < 0) {
             return lessThanHour;
         } else if (duration.compareTo(Duration.ofDays(1)) < 0) {

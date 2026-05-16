@@ -66,10 +66,9 @@ public class ParkingImpl implements PersistableParking {
         LocalDateTime now = LocalDateTime.now();
         ParkingRecord record = visitors.get(carNumber);
         LocalDateTime enterTime = record.enterTime();
-        Duration duration = Duration.between(enterTime, now);
         isFree[record.slot()] = true;
         visitors.remove(carNumber);
-        return calculator.calculate(duration);
+        return calculator.calculate(enterTime, now);
     }
 
     @Override
