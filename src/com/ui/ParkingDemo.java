@@ -3,6 +3,7 @@ package com.parking.src.com.ui;
 import com.parking.src.com.core.Parking;
 import com.parking.src.com.pricing.LenientPricingCalculator;
 import com.parking.src.com.core.ParkingImpl;
+import com.parking.src.com.pricing.NightDiscountCalculator;
 import com.parking.src.com.pricing.PricingCalculator;
 import com.parking.src.com.pricing.WeekendFreeCalculator;
 
@@ -11,18 +12,18 @@ import java.time.LocalDateTime;
 
 public class ParkingDemo {
     public static void main(String[] args) throws InterruptedException {
-        Parking parking = new ParkingImpl(20, new LenientPricingCalculator());
+        Parking parking = new ParkingImpl(20, new NightDiscountCalculator());
         parking.enter("AA8888AA");
         parking.enter("XA1234AA");
 //        Thread.sleep(10_000);
         parking.exit("AA8888AA");
         parking.enter("XA7777AA");
 
-        WeekendFreeCalculator weekendFreeCalculator = new WeekendFreeCalculator();
-        LocalDateTime enter = LocalDateTime.of(2025, 10, 10, 16, 0);
-//        LocalDateTime exit = LocalDateTime.of(2025, 10, 11, 21, 0);
-        LocalDateTime exit = LocalDateTime.of(2025, 10, 31, 21, 0);
-        BigDecimal price = weekendFreeCalculator.calculateForTest(enter, exit);
-        System.out.println("price: " + price);
+        NightDiscountCalculator calculator = new NightDiscountCalculator();
+        LocalDateTime enter = LocalDateTime.now();
+        LocalDateTime exit = enter.plusDays(1).withHour(6);
+        System.out.println("enter: " + enter);
+        System.out.println("exit: " + exit);
+        System.out.println("price: " + calculator.calculate(enter, exit));
     }
 }

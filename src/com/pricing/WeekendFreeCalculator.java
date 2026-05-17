@@ -2,32 +2,25 @@ package com.parking.src.com.pricing;
 
 import java.math.BigDecimal;
 import java.time.DayOfWeek;
-import java.time.Duration;
 import java.time.LocalDateTime;
 
 public class WeekendFreeCalculator implements PricingCalculator {
 
     @Override
-    public BigDecimal calculate(Duration duration) {
-        LocalDateTime enter = LocalDateTime.now();
-        LocalDateTime exit = enter.plus(duration);
-        return calculateForTest(enter, exit);
-    }
+    public BigDecimal calculate(LocalDateTime enter, LocalDateTime exit) {
+        if (enter.plusHours(1).isAfter(exit)) {
+            return ParkingPrice.LESS_THAN_HOUR.getValue();
+        }
 
-    /**
-     * @param enter
-     * @param exit
-     * @return
-     */
-    public BigDecimal calculateForTest(LocalDateTime enter, LocalDateTime exit) {
         BigDecimal totalPrice = BigDecimal.ZERO;
         LocalDateTime currentDateTime = enter;
+
         while (currentDateTime.isBefore(exit)) {
             DayOfWeek day = currentDateTime.getDayOfWeek();
             if (day != DayOfWeek.SATURDAY && day != DayOfWeek.SUNDAY) {
-                totalPrice = totalPrice.add(ParkingPrice.PER_DAY.getValue());
+                totalPrice = totalPrice.add(ParkingPrice.PER_HOUR.getValue());
             }
-            currentDateTime = currentDateTime.plusDays(1);
+            currentDateTime = currentDateTime.plusHours(1);
         }
         return totalPrice;
     }
