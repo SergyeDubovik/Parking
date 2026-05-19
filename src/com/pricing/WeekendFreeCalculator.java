@@ -18,7 +18,7 @@ public class WeekendFreeCalculator implements PricingCalculator {
         while (currentDateTime.isBefore(exit)) {
             DayOfWeek day = currentDateTime.getDayOfWeek();
             if (day != DayOfWeek.SATURDAY && day != DayOfWeek.SUNDAY) {
-                totalPrice = totalPrice.add(ParkingPrice.PER_HOUR.getValue());
+                totalPrice = totalPrice.add(ParkingPrice.PER_DAY.getValue());
             }
             currentDateTime = currentDateTime.plusHours(1);
         }

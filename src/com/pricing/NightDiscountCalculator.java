@@ -6,9 +6,19 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public class NightDiscountCalculator implements PricingCalculator {
-    private final LocalTime NIGHT_START = LocalTime.of(22, 00);
-    private final LocalTime NIGHT_END = LocalTime.of(6, 00);
-    private final BigDecimal nightDiscount = new BigDecimal("0.5");
+    private final LocalTime nightStart;
+    private final LocalTime nightEnd;
+    private final BigDecimal nightDiscount;
+
+    public NightDiscountCalculator() {
+        this(LocalTime.of(22, 0), LocalTime.of(6, 0), new BigDecimal("0.5"));
+    }
+
+    public NightDiscountCalculator(LocalTime nightStart, LocalTime nightEnd, BigDecimal nightDiscount) {
+        this.nightStart = nightStart;
+        this.nightEnd = nightEnd;
+        this.nightDiscount = nightDiscount;
+    }
 
     @Override
     public BigDecimal calculate(LocalDateTime enter, LocalDateTime exit) {
@@ -16,7 +26,7 @@ public class NightDiscountCalculator implements PricingCalculator {
         if (duration.compareTo(Duration.ofHours(1)) < 0) {
             return ParkingPrice.LESS_THAN_HOUR.getValue();
         }
-        BigDecimal totalPrice = BigDecimal.ZERO;
+        BigDecimal billingTime = BigDecimal.ZERO;
         LocalDateTime currentTime = enter;
 
         while (currentTime.isBefore(exit)) {
@@ -24,15 +34,15 @@ public class NightDiscountCalculator implements PricingCalculator {
             if (isNightTime(currentTime)) {
                 perHour = perHour.multiply(nightDiscount);
             }
-            totalPrice = totalPrice.add(perHour);
+            billingTime = billingTime.add(perHour);
             currentTime = currentTime.plusHours(1);
         }
-        return totalPrice;
+        return billingTime;
     }
 
     private boolean isNightTime(LocalDateTime dateTime) {
         LocalTime time = dateTime.toLocalTime();
 
-        return !time.isBefore(NIGHT_START) || time.isBefore(NIGHT_END);
+        return time.isAfter(nightStart) || time.isBefore(nightEnd);
     }
 }

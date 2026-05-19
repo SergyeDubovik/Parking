@@ -9,6 +9,7 @@ import com.parking.src.com.pricing.WeekendFreeCalculator;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 public class ParkingDemo {
     public static void main(String[] args) throws InterruptedException {
@@ -25,5 +26,16 @@ public class ParkingDemo {
         System.out.println("enter: " + enter);
         System.out.println("exit: " + exit);
         System.out.println("price: " + calculator.calculate(enter, exit));
+
+        NightDiscountCalculator calculator1 = new NightDiscountCalculator(
+                LocalTime.of(23, 0),
+                LocalTime.of(5, 0),
+                new BigDecimal("0.4"));
+
+        LocalDateTime enterParking = LocalDateTime.now();
+        LocalDateTime exitParking = enterParking.plusDays(2).withHour(5);
+        System.out.println("enter - " + enterParking);
+        System.out.println("exit - " + exitParking);
+        System.out.println("amount - " + calculator1.calculate(enterParking, exitParking));
     }
 }
