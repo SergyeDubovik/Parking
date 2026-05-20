@@ -1,6 +1,6 @@
 package com.parking.src.com.core;
 
-import com.parking.src.com.dataBase.DataBaseConnection;
+import com.parking.src.com.database.DatabaseConnection;
 import com.parking.src.com.model.ParkingRecord;
 import com.parking.src.com.pricing.PricingCalculator;
 
@@ -10,7 +10,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -85,7 +84,7 @@ public class ParkingImpl implements PersistableParking {
                     enter_time = EXCLUDED.enter_time,
                     slot = EXCLUDED.slot
                 """;
-        try (Connection connection = DataBaseConnection.getConnection();
+        try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql)) {
 
             for (Map.Entry<String, ParkingRecord> entry : visitors.entrySet()) {
