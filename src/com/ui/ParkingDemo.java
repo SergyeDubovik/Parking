@@ -8,34 +8,21 @@ import com.parking.src.com.pricing.PricingCalculator;
 import com.parking.src.com.pricing.WeekendFreeCalculator;
 
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public class ParkingDemo {
-    public static void main(String[] args) throws InterruptedException {
-        Parking parking = new ParkingImpl(20, new NightDiscountCalculator());
-        parking.enter("AA8888AA");
-        parking.enter("XA1234AA");
-//        Thread.sleep(10_000);
-        parking.exit("AA8888AA");
-        parking.enter("XA7777AA");
+    public static void main(String[] args) throws InterruptedException, SQLException {
+        ParkingImpl parking = new ParkingImpl(10, new NightDiscountCalculator());
+        parking.enter("bn1221sx");
+        parking.enter("as2341df");
+        parking.enter("er2389yy");
 
-        NightDiscountCalculator calculator = new NightDiscountCalculator();
-        LocalDateTime enter = LocalDateTime.now();
-        LocalDateTime exit = enter.plusDays(1).withHour(6);
-        System.out.println("enter: " + enter);
-        System.out.println("exit: " + exit);
-        System.out.println("price: " + calculator.calculate(enter, exit));
+        parking.exit("bn1221sx");
 
-        NightDiscountCalculator calculator1 = new NightDiscountCalculator(
-                LocalTime.of(23, 0),
-                LocalTime.of(5, 0),
-                new BigDecimal("0.4"));
+        parking.saveData();
 
-        LocalDateTime enterParking = LocalDateTime.now();
-        LocalDateTime exitParking = enterParking.plusDays(2).withHour(5);
-        System.out.println("enter - " + enterParking);
-        System.out.println("exit - " + exitParking);
-        System.out.println("amount - " + calculator1.calculate(enterParking, exitParking));
+        System.out.println("data saved");
     }
 }

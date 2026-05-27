@@ -65,9 +65,13 @@ public class ParkingImpl implements PersistableParking {
         LocalDateTime now = LocalDateTime.now();
         ParkingRecord record = visitors.get(carNumber);
         LocalDateTime enterTime = record.enterTime();
+
+        BigDecimal price = calculator.calculate(enterTime, now);
+        deleteFromDatabase(carNumber);
+
         isFree[record.slot()] = true;
         visitors.remove(carNumber);
-        return calculator.calculate(enterTime, now);
+        return price;
     }
 
     @Override
@@ -172,6 +176,19 @@ public class ParkingImpl implements PersistableParking {
             return null;
         }
         return localDateTime;
+    }
+
+    private void deleteFromDatabase(String carNumber) {
+        String sql = "DELETE FROM parking WHERE car_number = ?";
+
+        try (Connection connection = DatabaseConnection.getConnection();
+        PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, carNumber);
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Error deleting from database", e);
+        }
     }
 }
 
