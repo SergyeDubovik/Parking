@@ -15,13 +15,8 @@ import java.util.Scanner;
 
 public class ParkingCLI {
     public static void main(String[] args) throws IOException {
-        String fileName;
-        if (args.length > 0) {
-            fileName = args[0];
-        } else {
-            fileName = "parking.csv";
-        }
-        PersistableParking someParking = new ParkingImpl(10, new WeekendFreeCalculator(), fileName);
+
+        PersistableParking someParking = new ParkingImpl(10, new WeekendFreeCalculator());
         someParking.loadData();
         Scanner scanner = new Scanner(System.in);
 

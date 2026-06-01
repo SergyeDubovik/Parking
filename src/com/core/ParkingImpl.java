@@ -6,10 +6,7 @@ import com.parking.src.com.pricing.PricingCalculator;
 
 import java.io.*;
 import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -76,60 +73,63 @@ public class ParkingImpl implements PersistableParking {
 
     @Override
     public void saveData() throws SQLException {
-        if (visitors.isEmpty()) {
-            System.out.println("The parking is empty, no data to save");
-            return;
-        }
-        String sql = """
+        String deleteSql = "DELETE FROM parking";
+
+        String insertSql = """
                 INSERT INTO parking (car_number, enter_time, slot)
                 VALUES (?, ?, ?)
-                ON CONFLICT (car_number)
-                DO UPDATE SET
-                    enter_time = EXCLUDED.enter_time,
-                    slot = EXCLUDED.slot
                 """;
-        try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement ps = connection.prepareStatement(sql)) {
+        try (Connection connection = DatabaseConnection.getConnection()) {
+            connection.setAutoCommit(false);
+            try (PreparedStatement deleteStatement = connection.prepareStatement(deleteSql);
+                 PreparedStatement insertStatement = connection.prepareStatement(insertSql)) {
+                deleteStatement.executeUpdate();
 
-            for (Map.Entry<String, ParkingRecord> entry : visitors.entrySet()) {
-                ps.setString(1, entry.getKey());
-                ps.setTimestamp(2, Timestamp.valueOf(entry.getValue().enterTime()));
-                ps.setInt(3, entry.getValue().slot());
-                ps.executeUpdate();
+                for (Map.Entry<String, ParkingRecord> entry : visitors.entrySet()) {
+                    ParkingRecord record = entry.getValue();
+
+                    insertStatement.setString(1, entry.getKey());
+                    insertStatement.setTimestamp(2, Timestamp.valueOf(record.enterTime()));
+                    insertStatement.setInt(3, record.slot());
+
+                    insertStatement.executeUpdate();
+                }
+                connection.commit();
+                System.out.println("Data saved to database");
+            } catch (SQLException e) {
+                connection.rollback();
+                throw e;
             }
-            System.out.println("data saved to database");
         } catch (SQLException exception) {
-            throw new SQLException("Error saving data to database", exception);
+            throw new SQLException("Error saving to database", exception);
         }
+
     }
 
     @Override
-    public void loadData() throws IOException {
-        File file = new File(fileName);
-        if (!file.exists()) {
-            return;
-        }
-        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
-            String line;
-            while ((line = bufferedReader.readLine()) != null) {
-                String[] partsOfData = line.split(",");
-                if (partsOfData.length < 3) {
+    public void loadData() {
+        String sql = "SELECT car_number, enter_time, slot FROM parking";
+
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                String carNumber = rs.getString("car_number");
+                LocalDateTime enterTime = rs.getTimestamp("enter_time").toLocalDateTime();
+                int slot = rs.getInt("slot");
+
+                if (slot < 0 || slot >= size) {
+                    System.out.println("Invalid slot in database: " + slot);
                     continue;
                 }
-                String carNumber = partsOfData[0].trim();
-                String date = partsOfData[1].trim();
-                LocalDateTime localDateTime = tryParseDateTime(date);
-                if (localDateTime == null) {
-                    continue;
-                }
-                Integer slot = tryParseSlot(partsOfData);
-                if (slot == null || slot >= size) {
-                    continue;
-                }
-                ParkingRecord value = new ParkingRecord(slot, localDateTime);
-                visitors.put(carNumber, value);
+                ParkingRecord parkingRecord = new ParkingRecord(slot, enterTime);
+                visitors.put(carNumber, parkingRecord);
                 isFree[slot] = false;
             }
+            System.out.println("Data loaded from database successfully");
+        } catch (SQLException exception) {
+            throw new RuntimeException("Error loading data from database", exception);
         }
     }
 
@@ -182,7 +182,7 @@ public class ParkingImpl implements PersistableParking {
         String sql = "DELETE FROM parking WHERE car_number = ?";
 
         try (Connection connection = DatabaseConnection.getConnection();
-        PreparedStatement ps = connection.prepareStatement(sql)) {
+             PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, carNumber);
             ps.executeUpdate();
 

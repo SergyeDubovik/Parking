@@ -23,6 +23,5 @@ public class ParkingDemo {
 
         parking.saveData();
 
-        System.out.println("data saved");
     }
 }
