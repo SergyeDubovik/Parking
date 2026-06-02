@@ -4,7 +4,6 @@ import com.parking.src.com.core.CarNotFoundException;
 import com.parking.src.com.core.Parking;
 import com.parking.src.com.core.ParkingImpl;
 import com.parking.src.com.core.PersistableParking;
-import com.parking.src.com.pricing.SimplePricingCalculator;
 import com.parking.src.com.pricing.WeekendFreeCalculator;
 
 import java.io.IOException;

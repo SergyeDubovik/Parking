@@ -4,12 +4,10 @@ import com.parking.src.com.database.DatabaseConnection;
 import com.parking.src.com.model.ParkingRecord;
 import com.parking.src.com.pricing.PricingCalculator;
 
-import java.io.*;
 import java.math.BigDecimal;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,19 +18,13 @@ public class ParkingImpl implements PersistableParking {
     private final boolean[] isFree;
     private final PricingCalculator calculator;
     private final Map<String, ParkingRecord> visitors = new HashMap<>();
-    private final String fileName;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-    public ParkingImpl(int size, PricingCalculator calculator, String fileName) {
+    public ParkingImpl(int size, PricingCalculator calculator) {
         this.size = size;
         isFree = new boolean[size];
         Arrays.fill(isFree, true);
         this.calculator = calculator;
-        this.fileName = fileName;
-    }
-
-    public ParkingImpl(int size, PricingCalculator calculator) {
-        this(size, calculator, "parking.csv");
     }
 
     @Override
@@ -149,33 +141,6 @@ public class ParkingImpl implements PersistableParking {
     @Override
     public int takenSlots() {
         return visitors.size();
-    }
-
-
-    private static Integer tryParseSlot(String[] partsOfData) {
-        int slot;
-        try {
-            slot = Integer.parseInt(partsOfData[2].trim());
-            if (slot < 0) {
-                System.out.println("Slot number shouldn't be less than zero. Found: " + slot);
-                return null;
-            }
-        } catch (NumberFormatException e) {
-            System.out.println("Couldn't parse slot, slot should be a number " + e);
-            return null;
-        }
-        return slot;
-    }
-
-    private LocalDateTime tryParseDateTime(String date) {
-        LocalDateTime localDateTime;
-        try {
-            localDateTime = LocalDateTime.parse(date, formatter);
-        } catch (DateTimeParseException exception) {
-            System.out.println("Could not parse date, please check format " + exception);
-            return null;
-        }
-        return localDateTime;
     }
 
     private void deleteFromDatabase(String carNumber) {
