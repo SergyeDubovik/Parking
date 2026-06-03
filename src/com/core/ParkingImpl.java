@@ -4,14 +4,16 @@ import com.parking.src.com.database.DatabaseConnection;
 import com.parking.src.com.model.ParkingRecord;
 import com.parking.src.com.pricing.PricingCalculator;
 
+import javax.imageio.IIOException;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.*;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class ParkingImpl implements PersistableParking {
     private final int size;
@@ -19,6 +21,7 @@ public class ParkingImpl implements PersistableParking {
     private final PricingCalculator calculator;
     private final Map<String, ParkingRecord> visitors = new HashMap<>();
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    private static final String HISTORY_FILE_NAME = "parking-history.csv";
 
     public ParkingImpl(int size, PricingCalculator calculator) {
         this.size = size;
@@ -56,11 +59,32 @@ public class ParkingImpl implements PersistableParking {
         LocalDateTime enterTime = record.enterTime();
 
         BigDecimal price = calculator.calculate(enterTime, now);
+
+        writeParkingHistory(carNumber, enterTime, now, price);
+
         deleteFromDatabase(carNumber);
 
         isFree[record.slot()] = true;
         visitors.remove(carNumber);
         return price;
+    }
+
+    private void writeParkingHistory (String carNumber, LocalDateTime enter, LocalDateTime exit, BigDecimal price) {
+        Duration duration = Duration.between(enter, exit);
+
+        StringJoiner joiner = new StringJoiner(", ");
+        joiner.add(carNumber);
+        joiner.add(enter.format(formatter));
+        joiner.add(exit.format(formatter));
+        joiner.add(String.valueOf(duration.toMinutes()));
+        joiner.add(price.toString());
+        String line = joiner + System.lineSeparator();
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(HISTORY_FILE_NAME, true))) {
+            writer.write(line);
+        } catch (IOException e) {
+            throw new RuntimeException("Error writing history", e);
+        }
     }
 
     @Override
