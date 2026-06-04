@@ -5,6 +5,7 @@ import com.parking.src.com.core.Parking;
 import com.parking.src.com.core.ParkingImpl;
 import com.parking.src.com.core.PersistableParking;
 import com.parking.src.com.pricing.WeekendFreeCalculator;
+import com.parking.src.com.report.Report;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -40,8 +41,12 @@ public class ParkingCLI {
                 case "4":
                     findSpecifiedCar(parking, sc);
                     break;
+                case "5":
+                    generateReport();
+                    break;
                 case "0":
                     saveToFile(parking);
+                    generateReport();
                     System.out.println("Bye");
                     return;
                 default:
@@ -108,6 +113,11 @@ public class ParkingCLI {
         }
     }
 
+    private static void generateReport() {
+        Report report = new Report();
+        report.generateReport();
+    }
+
     private static void displayMenu() {
         System.out.println();
         System.out.println("Welcome to car parking! Choose an option from the menu below:");
@@ -115,6 +125,7 @@ public class ParkingCLI {
         System.out.println("2 - Car Exit");
         System.out.println("3 - Show Parking Status");
         System.out.println("4 - Find Car By Number");
+        System.out.println("5 - Generate report to HTML file");
         System.out.println("0 - Close app");
     }
 }
