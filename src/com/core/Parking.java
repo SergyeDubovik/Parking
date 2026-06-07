@@ -9,4 +9,5 @@ public interface Parking {
     boolean[] getStatus();
     int takenSlots();
     Optional<Integer> findCar(String carNumber);
+    void generateReport();
 }

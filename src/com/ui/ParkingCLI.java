@@ -4,6 +4,7 @@ import com.parking.src.com.core.CarNotFoundException;
 import com.parking.src.com.core.Parking;
 import com.parking.src.com.core.ParkingImpl;
 import com.parking.src.com.core.PersistableParking;
+import com.parking.src.com.core.report.HtmlReportGenerator;
 import com.parking.src.com.pricing.WeekendFreeCalculator;
 
 import java.io.IOException;
@@ -15,7 +16,8 @@ import java.util.Scanner;
 public class ParkingCLI {
     public static void main(String[] args) throws IOException {
 
-        PersistableParking someParking = new ParkingImpl(10, new WeekendFreeCalculator());
+        PersistableParking someParking = new ParkingImpl(10, new WeekendFreeCalculator(), new HtmlReportGenerator());
+
         someParking.loadData();
         Scanner scanner = new Scanner(System.in);
 
@@ -40,8 +42,12 @@ public class ParkingCLI {
                 case "4":
                     findSpecifiedCar(parking, sc);
                     break;
+                case "5":
+                    parking.generateReport();
+                    break;
                 case "0":
                     saveToFile(parking);
+                    parking.generateReport();
                     System.out.println("Bye");
                     return;
                 default:
@@ -115,6 +121,7 @@ public class ParkingCLI {
         System.out.println("2 - Car Exit");
         System.out.println("3 - Show Parking Status");
         System.out.println("4 - Find Car By Number");
+        System.out.println("5 - Generate report to HTML file");
         System.out.println("0 - Close app");
     }
 }
