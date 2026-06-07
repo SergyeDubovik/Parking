@@ -4,8 +4,8 @@ import com.parking.src.com.core.CarNotFoundException;
 import com.parking.src.com.core.Parking;
 import com.parking.src.com.core.ParkingImpl;
 import com.parking.src.com.core.PersistableParking;
+import com.parking.src.com.core.report.HtmlReportGenerator;
 import com.parking.src.com.pricing.WeekendFreeCalculator;
-import com.parking.src.com.report.Report;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -16,7 +16,8 @@ import java.util.Scanner;
 public class ParkingCLI {
     public static void main(String[] args) throws IOException {
 
-        PersistableParking someParking = new ParkingImpl(10, new WeekendFreeCalculator());
+        PersistableParking someParking = new ParkingImpl(10, new WeekendFreeCalculator(), new HtmlReportGenerator());
+
         someParking.loadData();
         Scanner scanner = new Scanner(System.in);
 
@@ -42,11 +43,11 @@ public class ParkingCLI {
                     findSpecifiedCar(parking, sc);
                     break;
                 case "5":
-                    generateReport();
+                    parking.generateReport();
                     break;
                 case "0":
                     saveToFile(parking);
-                    generateReport();
+                    parking.generateReport();
                     System.out.println("Bye");
                     return;
                 default:
@@ -111,11 +112,6 @@ public class ParkingCLI {
         } catch (IOException | SQLException e) {
             System.out.println("Failed to save parking data " + e.getMessage());
         }
-    }
-
-    private static void generateReport() {
-        Report report = new Report();
-        report.generateReport();
     }
 
     private static void displayMenu() {

@@ -1,5 +1,6 @@
 package com.parking.src.com.core;
 
+import com.parking.src.com.core.report.ReportGenerator;
 import com.parking.src.com.database.DatabaseConnection;
 import com.parking.src.com.model.ParkingRecord;
 import com.parking.src.com.pricing.PricingCalculator;
@@ -19,15 +20,17 @@ public class ParkingImpl implements PersistableParking {
     private final int size;
     private final boolean[] isFree;
     private final PricingCalculator calculator;
+    private final ReportGenerator generator;
     private final Map<String, ParkingRecord> visitors = new HashMap<>();
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-    private static final String HISTORY_FILE_NAME = "parking-history.csv";
+    public static final String HISTORY_FILE_NAME = "parking-history.csv";
 
-    public ParkingImpl(int size, PricingCalculator calculator) {
+    public ParkingImpl(int size, PricingCalculator calculator, ReportGenerator generator) {
         this.size = size;
         isFree = new boolean[size];
         Arrays.fill(isFree, true);
         this.calculator = calculator;
+        this.generator = generator;
     }
 
     @Override
@@ -178,6 +181,11 @@ public class ParkingImpl implements PersistableParking {
         } catch (SQLException e) {
             throw new RuntimeException("Error deleting from database", e);
         }
+    }
+
+    @Override
+    public void generateReport() {
+        generator.generateReport();
     }
 }
 
