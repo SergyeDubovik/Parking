@@ -5,7 +5,6 @@ import com.parking.src.com.database.DatabaseConnection;
 import com.parking.src.com.model.ParkingRecord;
 import com.parking.src.com.pricing.PricingCalculator;
 
-import javax.imageio.IIOException;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
