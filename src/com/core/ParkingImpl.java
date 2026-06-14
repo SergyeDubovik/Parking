@@ -186,5 +186,10 @@ public class ParkingImpl implements PersistableParking {
     public void generateReport() {
         generator.generateReport();
     }
+
+    @Override
+    public Map<String, ParkingRecord> parkedCars() {
+        return new HashMap<>(visitors);
+    }
 }
 
