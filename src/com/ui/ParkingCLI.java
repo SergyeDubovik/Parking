@@ -5,11 +5,14 @@ import com.parking.src.com.core.Parking;
 import com.parking.src.com.core.ParkingImpl;
 import com.parking.src.com.core.PersistableParking;
 import com.parking.src.com.core.report.HtmlReportGenerator;
+import com.parking.src.com.model.ParkingRecord;
 import com.parking.src.com.pricing.WeekendFreeCalculator;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.time.format.DateTimeFormatter;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Scanner;
 
@@ -40,9 +43,12 @@ public class ParkingCLI {
                     showParkingStatus(parking);
                     break;
                 case "4":
-                    findSpecifiedCar(parking, sc);
+                    showParkedCars(parking);
                     break;
                 case "5":
+                    findSpecifiedCar(parking, sc);
+                    break;
+                case "6":
                     parking.generateReport();
                     break;
                 case "0":
@@ -94,6 +100,21 @@ public class ParkingCLI {
         System.out.println();
     }
 
+    private static void showParkedCars(Parking parking) {
+        Map<String, ParkingRecord> cars = parking.parkedCars();
+        if (cars.isEmpty()) {
+            System.out.println("the parking is empty for now");
+            return;
+        }
+        for (Map.Entry<String, ParkingRecord> entry : cars.entrySet()) {
+            String carNumber = entry.getKey();
+            ParkingRecord record = entry.getValue();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+            System.out.println("Car " + carNumber + " is staying on slot №" + (record.slot() +1) + ", " +
+                    "enter time: " + record.enterTime().format(formatter));
+        }
+    }
+
     private static void findSpecifiedCar(Parking parking, Scanner scanner) {
         System.out.println("Enter the car number: ");
         String carNumber = scanner.nextLine();
@@ -120,8 +141,9 @@ public class ParkingCLI {
         System.out.println("1 - Car Enter");
         System.out.println("2 - Car Exit");
         System.out.println("3 - Show Parking Status");
-        System.out.println("4 - Find Car By Number");
-        System.out.println("5 - Generate report to HTML file");
+        System.out.println("4 - Show Parked Cars");
+        System.out.println("5 - Find Car By Number");
+        System.out.println("6 - Generate report to HTML file");
         System.out.println("0 - Close app");
     }
 }
