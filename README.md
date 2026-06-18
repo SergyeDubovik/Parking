@@ -1,6 +1,6 @@
 # Parking
 Java console application for managing a parking lot. 
-The system supports vehicle entry and exit, automatic fee calculation, data persistence via CSV files, and multiple pricing strategies.
+The system supports vehicle entry and exit, automatic fee calculation, and multiple pricing strategies.
 ## Features
 - Add and remove cars by their number
 - Prevent duplicate parking
@@ -11,6 +11,7 @@ The system supports vehicle entry and exit, automatic fee calculation, data pers
 - Show available and occupied parking slots
 - Configurable parking size
 - Automatically assigns the first available slot
+- Ability to view currently parked cars in real time
 ---
 **Payment calculation**
 - Automatic fee calculation based on parking duration
@@ -50,13 +51,14 @@ Welcome to Car Parking:
 - 1 - Car Enter
 - 2 - Car Exit
 - 3 - Show Parking Status
-- 4 - Find specified car
-- 5 - Generate report to HTML file
+- 4 - Show Parked Cars
+- 5 - Find specified car
+- 6 - Generate report to HTML file
 - 0 - Close app
 ## Usage
 ## Example output:
 
 - Waiting for input car number...
-- Car added successfully.
+- Car parked successfully.
 - Sorry, parking is already full (10/10 slots taken).
-- Car not found, please check input data one more time.
+- Car not found. Please verify data and try again.

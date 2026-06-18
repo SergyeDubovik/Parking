@@ -101,7 +101,7 @@ public class ParkingCLI {
     }
 
     private static void showParkedCars(Parking parking) {
-        Map<String, ParkingRecord> cars = parking.parkedCars();
+        Map<String, ParkingRecord> cars = parking.getParkedCars();
         if (cars.isEmpty()) {
             System.out.println("the parking is empty for now");
             return;

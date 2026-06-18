@@ -188,8 +188,8 @@ public class ParkingImpl implements PersistableParking {
     }
 
     @Override
-    public Map<String, ParkingRecord> parkedCars() {
-        return new HashMap<>(visitors);
+    public Map<String, ParkingRecord> getParkedCars() {
+        return Map.copyOf(visitors);
     }
 }
 

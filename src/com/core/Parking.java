@@ -13,5 +13,5 @@ public interface Parking {
     int takenSlots();
     Optional<Integer> findCar(String carNumber);
     void generateReport();
-    Map<String, ParkingRecord> parkedCars();
+    Map<String, ParkingRecord> getParkedCars();
 }
