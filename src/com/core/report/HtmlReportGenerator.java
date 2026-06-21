@@ -2,6 +2,7 @@ package com.parking.src.com.core.report;
 
 import java.io.*;
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -28,7 +29,7 @@ public class HtmlReportGenerator implements ReportGenerator {
                 String carNumber = parts[0].trim();
                 String enterTime = parts[1].trim();
                 String exitTime = parts[2].trim();
-                String duration = parts[3].trim();
+                String duration = formatDuration(parts[3].trim());
                 BigDecimal price = new BigDecimal(parts[4].trim());
                 records.add(new ReportRecord(carNumber, enterTime, exitTime, duration, price));
             }
@@ -43,5 +44,26 @@ public class HtmlReportGenerator implements ReportGenerator {
         } catch (IOException e) {
             throw new RuntimeException("Error writing report", e);
         }
+    }
+
+    private String formatDuration(String durationMinutes) {
+        Duration duration = Duration.ofMinutes(Long.parseLong(durationMinutes.trim()));
+        long days = duration.toDaysPart();
+        long hours = duration.toHoursPart();
+        long mins = duration.toMinutesPart();
+
+        StringBuilder res = new StringBuilder();
+        if (days > 0) {
+            res.append(days).append(" days, ");
+        }
+        if (hours > 0) {
+            res.append(hours).append(" hours, ");
+        }
+        if (mins >= 0 || res.isEmpty()) {
+            res.append(mins).append(" minutes");
+        }
+
+        return res.toString().trim();
+
     }
 }
