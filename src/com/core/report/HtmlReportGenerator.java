@@ -53,9 +53,15 @@ public class HtmlReportGenerator implements ReportGenerator {
         long mins = duration.toMinutesPart();
 
         StringBuilder res = new StringBuilder();
-        if (days > 0) res.append(days).append(" days, ");
-        if (hours > 0) res.append(hours).append(" hours, ");
-        if (mins >= 0 || res.isEmpty()) res.append(mins).append(" minutes");
+        if (days > 0) {
+            res.append(days).append(" days, ");
+        }
+        if (hours > 0) {
+            res.append(hours).append(" hours, ");
+        }
+        if (mins >= 0 || res.isEmpty()) {
+            res.append(mins).append(" minutes");
+        }
 
         return res.toString().trim();
 
