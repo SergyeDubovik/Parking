@@ -35,10 +35,14 @@ public class HtmlReportGenerator implements ReportGenerator {
             }
             records.sort(Comparator.comparing(ReportRecord::price));
 
+            BigDecimal totalPrice = getTotalPrice(records);
+
             for (ReportRecord record : records) {
                 writer.write(" <tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td>" // <td> means "table data"
                         .formatted(record.carNumber(), record.enterTime(), record.exitTime(), record.duration(), record.price()));
             }
+            writer.write("<tr><td colspan='4'><strong>Total revenue</strong></td><td><strong>%s</strong></td></tr>"
+                    .formatted(totalPrice));
             writer.write("</table></body></html>");
             System.out.println("Report has been written successfully");
         } catch (IOException e) {
@@ -64,6 +68,13 @@ public class HtmlReportGenerator implements ReportGenerator {
         }
 
         return res.toString().trim();
+    }
 
+    private static BigDecimal getTotalPrice(List<ReportRecord> records) {
+        BigDecimal totalPrice = BigDecimal.ZERO;
+        for (ReportRecord rec : records) {
+            totalPrice = totalPrice.add(rec.price());
+        }
+        return totalPrice;
     }
 }
