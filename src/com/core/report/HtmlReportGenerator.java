@@ -35,7 +35,7 @@ public class HtmlReportGenerator implements ReportGenerator {
             }
             records.sort(Comparator.comparing(ReportRecord::price));
 
-            BigDecimal totalPrice = getTotalPrice(records);
+            BigDecimal totalPrice = records.stream().map(ReportRecord::price).reduce(BigDecimal.ZERO, BigDecimal::add);
 
             for (ReportRecord record : records) {
                 writer.write(" <tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td>" // <td> means "table data"
@@ -68,13 +68,5 @@ public class HtmlReportGenerator implements ReportGenerator {
         }
 
         return res.toString().trim();
-    }
-
-    private static BigDecimal getTotalPrice(List<ReportRecord> records) {
-        BigDecimal totalPrice = BigDecimal.ZERO;
-        for (ReportRecord rec : records) {
-            totalPrice = totalPrice.add(rec.price());
-        }
-        return totalPrice;
     }
 }
