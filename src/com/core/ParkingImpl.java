@@ -14,6 +14,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.IntStream;
 
 public class ParkingImpl implements PersistableParking {
     private final int size;
@@ -37,17 +38,17 @@ public class ParkingImpl implements PersistableParking {
         if (visitors.containsKey(carNumber)) {
             throw new RuntimeException("Car " + carNumber + " is already parked");
         }
-        for (int i = 0; i < isFree.length; i++) {
-            if (isFree[i]) {
-                isFree[i] = false;
-                LocalDateTime enterCar = LocalDateTime.now();
-                ParkingRecord record = new ParkingRecord(i, enterCar);
-                visitors.put(carNumber, record);
-                return true;
-            }
+        OptionalInt freeSlot = IntStream.range(0, isFree.length)
+                .filter(i -> isFree[i])
+                .findFirst();
+        if (freeSlot.isEmpty()) {
+            System.out.println("Sorry, parking is already full. " + visitors.size() + "/" + size + " slots taken");
+            return false;
         }
-        System.out.println("Sorry, parking is already full. " + visitors.size() + "/" + size + " slots taken");
-        return false;
+        int slot = freeSlot.getAsInt();
+        isFree[slot] = false;
+        visitors.put(carNumber, new ParkingRecord(slot, LocalDateTime.now()));
+        return true;
     }
 
 
