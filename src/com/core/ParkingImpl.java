@@ -1,18 +1,17 @@
 package com.parking.src.com.core;
 
+import com.parking.src.com.core.logging.ParkingHistory;
+import com.parking.src.com.core.logging.ParkingHistoryCsv;
+import com.parking.src.com.core.report.HtmlReportGenerator;
 import com.parking.src.com.core.report.ReportGenerator;
 import com.parking.src.com.database.DatabaseConnection;
 import com.parking.src.com.model.ParkingRecord;
 import com.parking.src.com.pricing.PricingCalculator;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.*;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.IntStream;
 
@@ -22,15 +21,26 @@ public class ParkingImpl implements PersistableParking {
     private final PricingCalculator calculator;
     private final ReportGenerator generator;
     private final Map<String, ParkingRecord> visitors = new HashMap<>();
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-    public static final String HISTORY_FILE_NAME = "parking-history.csv";
+    private final ParkingHistory logger;
 
-    public ParkingImpl(int size, PricingCalculator calculator, ReportGenerator generator) {
+    public ParkingImpl(int size, PricingCalculator calculator, ReportGenerator generator, ParkingHistory logger) {
         this.size = size;
         isFree = new boolean[size];
         Arrays.fill(isFree, true);
         this.calculator = calculator;
         this.generator = generator;
+        this.logger = logger;
+    }
+    public ParkingImpl(int size, PricingCalculator calculator) {
+        this(size, calculator, new HtmlReportGenerator(), new ParkingHistoryCsv());
+    }
+
+    public ParkingImpl(int size, PricingCalculator calculator, ParkingHistory logger) {
+        this(size, calculator, new HtmlReportGenerator(), logger);
+    }
+
+    public ParkingImpl(int size, PricingCalculator calculator, ReportGenerator generator) {
+        this(size, calculator, generator, new ParkingHistoryCsv());
     }
 
     @Override
@@ -63,31 +73,14 @@ public class ParkingImpl implements PersistableParking {
 
         BigDecimal price = calculator.calculate(enterTime, now);
 
-        writeParkingHistory(carNumber, enterTime, now, price);
+        Duration duration = Duration.between(enterTime, now);
+        logger.log(carNumber, enterTime, now, duration.toMinutes(), price);
 
         deleteFromDatabase(carNumber);
 
         isFree[record.slot()] = true;
         visitors.remove(carNumber);
         return price;
-    }
-
-    private void writeParkingHistory (String carNumber, LocalDateTime enter, LocalDateTime exit, BigDecimal price) {
-        Duration duration = Duration.between(enter, exit);
-
-        StringJoiner joiner = new StringJoiner(", ");
-        joiner.add(carNumber);
-        joiner.add(enter.format(formatter));
-        joiner.add(exit.format(formatter));
-        joiner.add(String.valueOf(duration.toMinutes()));
-        joiner.add(price.toString());
-        String line = joiner + System.lineSeparator();
-
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(HISTORY_FILE_NAME, true))) {
-            writer.write(line);
-        } catch (IOException e) {
-            throw new RuntimeException("Error writing history", e);
-        }
     }
 
     @Override

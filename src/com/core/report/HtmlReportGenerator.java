@@ -7,10 +7,10 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import static com.parking.src.com.core.ParkingImpl.HISTORY_FILE_NAME;
 
 public class HtmlReportGenerator implements ReportGenerator {
 
+    private static final String HISTORY_FILE_NAME = "parking-history.csv";
     private static final String REPORT_FILE_NAME = "parking-report.html";
 
     @Override
@@ -20,7 +20,7 @@ public class HtmlReportGenerator implements ReportGenerator {
             writer.write("""
                     <!DOCTYPE html><html><head><meta charset="UTF-8"><title>Parking Report</title></head><body>
                     <h1>Parking Report</h1><table border="1"><tr><th>Car Number</th><th>Enter Time</th><th>Exit Time</th>
-                    <th>Duration, minutes</th><th>Payment</th></tr>"""); // <tr> means "table row"
+                    <th>Duration</th><th>Payment</th></tr>"""); // <tr> means "table row"
 
             String line;
             List<ReportRecord> records = new ArrayList<>();
@@ -38,7 +38,7 @@ public class HtmlReportGenerator implements ReportGenerator {
             BigDecimal totalPrice = records.stream().map(ReportRecord::price).reduce(BigDecimal.ZERO, BigDecimal::add);
 
             for (ReportRecord record : records) {
-                writer.write(" <tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td>" // <td> means "table data"
+                writer.write(" <tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>" // <td> means "table data"
                         .formatted(record.carNumber(), record.enterTime(), record.exitTime(), record.duration(), record.price()));
             }
             writer.write("<tr><td colspan='4'><strong>Total revenue</strong></td><td><strong>%s</strong></td></tr>"
