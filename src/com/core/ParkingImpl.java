@@ -32,16 +32,16 @@ public class ParkingImpl implements PersistableParking {
         this.logger = logger;
     }
     public ParkingImpl(int size, PricingCalculator calculator) {
-        this(size, calculator, new HtmlReportGenerator(), new ParkingHistoryCsv());
+        this(size, calculator, new ParkingHistoryCsv());
     }
 
     public ParkingImpl(int size, PricingCalculator calculator, ParkingHistory logger) {
-        this(size, calculator, new HtmlReportGenerator(), logger);
+        this(size, calculator, new HtmlReportGenerator(logger), logger);
     }
 
-    public ParkingImpl(int size, PricingCalculator calculator, ReportGenerator generator) {
-        this(size, calculator, generator, new ParkingHistoryCsv());
-    }
+//    public ParkingImpl(int size, PricingCalculator calculator, ReportGenerator generator) {
+//        this(size, calculator, generator, new ParkingHistoryCsv());
+//    }
 
     @Override
     public boolean enter(String carNumber) {

@@ -1,15 +1,18 @@
 package com.parking.src.com.core.logging;
 
+import com.parking.src.com.core.report.ReportRecord;
 import com.parking.src.com.database.DatabaseConnection;
 
 import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ParkingHistoryDatabase implements ParkingHistory {
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
     @Override
     public void log(String carNumber, LocalDateTime enterTime, LocalDateTime exitTime, long duration, BigDecimal price) {
         String sql = "INSERT INTO parking_history(car_number, enter_time, exit_time, duration_minutes, price)" +
@@ -24,6 +27,27 @@ public class ParkingHistoryDatabase implements ParkingHistory {
             pr.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("error writing to db", e);
+        }
+    }
+
+    @Override
+    public List<ReportRecord> findAll() {
+        List<ReportRecord> records = new ArrayList<>();
+        String sql = "SELECT car_number, enter_time, exit_time, duration_minutes, price FROM parking_history";
+        try (Connection connection = DatabaseConnection.getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        ResultSet resultSet = preparedStatement.executeQuery()) {
+            while (resultSet.next()) {
+                String carNumber = resultSet.getString("car_number");
+                String enterTime = resultSet.getTimestamp("enter_time").toLocalDateTime().format(formatter);
+                String exitTime = resultSet.getTimestamp("exit_time").toLocalDateTime().format(formatter);
+                String duration = String.valueOf(resultSet.getLong("duration_minutes"));
+                BigDecimal price = resultSet.getBigDecimal("price");
+                records.add(new ReportRecord(carNumber, enterTime, exitTime, duration, price));
+            }
+            return records;
+        } catch (SQLException e) {
+            throw new RuntimeException("error reading parking history from db" , e);
         }
     }
 }

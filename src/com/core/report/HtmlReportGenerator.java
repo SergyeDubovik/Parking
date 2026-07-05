@@ -1,5 +1,7 @@
 package com.parking.src.com.core.report;
 
+import com.parking.src.com.core.logging.ParkingHistory;
+
 import java.io.*;
 import java.math.BigDecimal;
 import java.time.Duration;
@@ -10,36 +12,31 @@ import java.util.List;
 
 public class HtmlReportGenerator implements ReportGenerator {
 
-    private static final String HISTORY_FILE_NAME = "parking-history.csv";
     private static final String REPORT_FILE_NAME = "parking-report.html";
+    private final ParkingHistory history;
+
+    public HtmlReportGenerator(ParkingHistory history) {
+        this.history = history;
+    }
 
     @Override
     public void generateReport() {
-        try (BufferedReader reader = new BufferedReader(new FileReader(HISTORY_FILE_NAME));
-             BufferedWriter writer = new BufferedWriter(new FileWriter(REPORT_FILE_NAME))) {
+        List<ReportRecord> records = history.findAll();
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(REPORT_FILE_NAME))) {
             writer.write("""
                     <!DOCTYPE html><html><head><meta charset="UTF-8"><title>Parking Report</title></head><body>
                     <h1>Parking Report</h1><table border="1"><tr><th>Car Number</th><th>Enter Time</th><th>Exit Time</th>
                     <th>Duration</th><th>Payment</th></tr>"""); // <tr> means "table row"
 
-            String line;
-            List<ReportRecord> records = new ArrayList<>();
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(",");
-                String carNumber = parts[0].trim();
-                String enterTime = parts[1].trim();
-                String exitTime = parts[2].trim();
-                String duration = formatDuration(parts[3].trim());
-                BigDecimal price = new BigDecimal(parts[4].trim());
-                records.add(new ReportRecord(carNumber, enterTime, exitTime, duration, price));
-            }
+
             records.sort(Comparator.comparing(ReportRecord::price));
 
             BigDecimal totalPrice = records.stream().map(ReportRecord::price).reduce(BigDecimal.ZERO, BigDecimal::add);
 
             for (ReportRecord record : records) {
                 writer.write(" <tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>" // <td> means "table data"
-                        .formatted(record.carNumber(), record.enterTime(), record.exitTime(), record.duration(), record.price()));
+                        .formatted(record.carNumber(), record.enterTime(), record.exitTime(),
+                                formatDuration(record.duration()), record.price()));
             }
             writer.write("<tr><td colspan='4'><strong>Total revenue</strong></td><td><strong>%s</strong></td></tr>"
                     .formatted(totalPrice));

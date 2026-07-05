@@ -22,7 +22,7 @@ public class ParkingCLI {
     public static void main(String[] args) throws IOException {
 
         PersistableParking someParking = new ParkingImpl(
-                10, new WeekendFreeCalculator(), new HtmlReportGenerator(), new ParkingHistoryDatabase());
+                10, new WeekendFreeCalculator(), new ParkingHistoryDatabase());
 
         someParking.loadData();
         Scanner scanner = new Scanner(System.in);
