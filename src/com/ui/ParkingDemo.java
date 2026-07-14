@@ -15,7 +15,7 @@ import java.time.LocalTime;
 
 public class ParkingDemo {
     public static void main(String[] args) throws InterruptedException, SQLException {
-        ParkingImpl parking = new ParkingImpl(10, new NightDiscountCalculator(), new HtmlReportGenerator());
+        ParkingImpl parking = new ParkingImpl(10, new NightDiscountCalculator());
         parking.enter("bn1221sx");
         parking.enter("as2341df");
         parking.enter("er2389yy");
