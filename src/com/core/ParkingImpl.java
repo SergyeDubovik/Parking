@@ -1,7 +1,7 @@
 package com.parking.src.com.core;
 
-import com.parking.src.com.core.logging.ParkingHistory;
-import com.parking.src.com.core.logging.ParkingHistoryCsv;
+import com.parking.src.com.core.history.ParkingHistory;
+import com.parking.src.com.core.history.CsvParkingHistory;
 import com.parking.src.com.core.report.HtmlReportGenerator;
 import com.parking.src.com.core.report.ReportGenerator;
 import com.parking.src.com.database.DatabaseConnection;
@@ -21,27 +21,27 @@ public class ParkingImpl implements PersistableParking {
     private final PricingCalculator calculator;
     private final ReportGenerator generator;
     private final Map<String, ParkingRecord> visitors = new HashMap<>();
-    private final ParkingHistory logger;
+    private final ParkingHistory history;
 
-    public ParkingImpl(int size, PricingCalculator calculator, ReportGenerator generator, ParkingHistory logger) {
+    public ParkingImpl(int size, PricingCalculator calculator, ReportGenerator generator, ParkingHistory history) {
         this.size = size;
         isFree = new boolean[size];
         Arrays.fill(isFree, true);
         this.calculator = calculator;
         this.generator = generator;
-        this.logger = logger;
+        this.history = history;
     }
     public ParkingImpl(int size, PricingCalculator calculator) {
-        this(size, calculator, new HtmlReportGenerator(), new ParkingHistoryCsv());
+        this(size, calculator, new CsvParkingHistory());
     }
 
-    public ParkingImpl(int size, PricingCalculator calculator, ParkingHistory logger) {
-        this(size, calculator, new HtmlReportGenerator(), logger);
+    public ParkingImpl(int size, PricingCalculator calculator, ParkingHistory history) {
+        this(size, calculator, new HtmlReportGenerator(history), history);
     }
 
-    public ParkingImpl(int size, PricingCalculator calculator, ReportGenerator generator) {
-        this(size, calculator, generator, new ParkingHistoryCsv());
-    }
+//    public ParkingImpl(int size, PricingCalculator calculator, ReportGenerator generator) {
+//        this(size, calculator, generator, new ParkingHistoryCsv());
+//    }
 
     @Override
     public boolean enter(String carNumber) {
@@ -74,7 +74,7 @@ public class ParkingImpl implements PersistableParking {
         BigDecimal price = calculator.calculate(enterTime, now);
 
         Duration duration = Duration.between(enterTime, now);
-        logger.log(carNumber, enterTime, now, duration.toMinutes(), price);
+        history.saveHistory(carNumber, enterTime, now, duration.toMinutes(), price);
 
         deleteFromDatabase(carNumber);
 
