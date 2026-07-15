@@ -4,9 +4,7 @@ import com.parking.src.com.core.CarNotFoundException;
 import com.parking.src.com.core.Parking;
 import com.parking.src.com.core.ParkingImpl;
 import com.parking.src.com.core.PersistableParking;
-import com.parking.src.com.core.logging.ParkingHistoryCsv;
-import com.parking.src.com.core.logging.ParkingHistoryDatabase;
-import com.parking.src.com.core.report.HtmlReportGenerator;
+import com.parking.src.com.core.history.DatabaseParkingHistory;
 import com.parking.src.com.model.ParkingRecord;
 import com.parking.src.com.pricing.WeekendFreeCalculator;
 
@@ -22,7 +20,7 @@ public class ParkingCLI {
     public static void main(String[] args) throws IOException {
 
         PersistableParking someParking = new ParkingImpl(
-                10, new WeekendFreeCalculator(), new ParkingHistoryDatabase());
+                10, new WeekendFreeCalculator(), new DatabaseParkingHistory());
 
         someParking.loadData();
         Scanner scanner = new Scanner(System.in);

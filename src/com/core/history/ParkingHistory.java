@@ -1,4 +1,4 @@
-package com.parking.src.com.core.logging;
+package com.parking.src.com.core.history;
 
 import com.parking.src.com.core.report.ReportRecord;
 
@@ -7,6 +7,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface ParkingHistory {
-    void log(String carNumber, LocalDateTime enterTime, LocalDateTime exitTime, long duration, BigDecimal price);
+    void saveHistory(String carNumber, LocalDateTime enterTime, LocalDateTime exitTime, long duration, BigDecimal price);
     List<ReportRecord> findAll();
 }

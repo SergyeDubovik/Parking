@@ -1,4 +1,4 @@
-package com.parking.src.com.core.logging;
+package com.parking.src.com.core.history;
 
 import com.parking.src.com.core.report.ReportRecord;
 import com.parking.src.com.database.DatabaseConnection;
@@ -10,13 +10,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ParkingHistoryDatabase implements ParkingHistory {
+public class DatabaseParkingHistory implements ParkingHistory {
+    String sql = "INSERT INTO parking_history(car_number, enter_time, exit_time, duration_minutes, price)" +
+            "VALUES (?, ?, ?, ?, ?)";
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     @Override
-    public void log(String carNumber, LocalDateTime enterTime, LocalDateTime exitTime, long duration, BigDecimal price) {
-        String sql = "INSERT INTO parking_history(car_number, enter_time, exit_time, duration_minutes, price)" +
-                "VALUES (?, ?, ?, ?, ?)";
+    public void saveHistory(String carNumber, LocalDateTime enterTime, LocalDateTime exitTime, long duration, BigDecimal price) {
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement pr = connection.prepareStatement(sql)) {
             pr.setString(1, carNumber);

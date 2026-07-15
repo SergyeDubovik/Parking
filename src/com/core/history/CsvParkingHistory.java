@@ -1,4 +1,4 @@
-package com.parking.src.com.core.logging;
+package com.parking.src.com.core.history;
 
 import com.parking.src.com.core.report.ReportRecord;
 
@@ -11,12 +11,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.StringJoiner;
 
-public class ParkingHistoryCsv implements ParkingHistory {
+public class CsvParkingHistory implements ParkingHistory {
     private static final String HISTORY_FILE_NAME = "parking-history.csv";
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     @Override
-    public void log(String carNumber, LocalDateTime enterTime, LocalDateTime exitTime, long duration, BigDecimal price) {
+    public void saveHistory(String carNumber, LocalDateTime enterTime, LocalDateTime exitTime, long duration, BigDecimal price) {
         StringJoiner joiner = new StringJoiner(", ");
         joiner.add(carNumber);
         joiner.add(enterTime.format(formatter));

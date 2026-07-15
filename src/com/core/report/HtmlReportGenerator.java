@@ -1,11 +1,10 @@
 package com.parking.src.com.core.report;
 
-import com.parking.src.com.core.logging.ParkingHistory;
+import com.parking.src.com.core.history.ParkingHistory;
 
 import java.io.*;
 import java.math.BigDecimal;
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
